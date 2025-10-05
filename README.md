@@ -1,5 +1,12 @@
 # npm-minimum-age-validation
 
+[![npm version](https://img.shields.io/npm/v/@josepderiu/npm-minimum-age-validation.svg?style=flat-square)](https://www.npmjs.com/package/@josepderiu/npm-minimum-age-validation)
+[![npm downloads](https://img.shields.io/npm/dm/@josepderiu/npm-minimum-age-validation.svg?style=flat-square)](https://www.npmjs.com/package/@josepderiu/npm-minimum-age-validation)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/josepderiu/npm-minimum-age-validation/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/josepderiu/npm-minimum-age-validation/actions/workflows/ci.yml)
+[![codecov](https://img.shields.io/codecov/c/github/josepderiu/npm-minimum-age-validation?style=flat-square)](https://codecov.io/gh/josepderiu/npm-minimum-age-validation)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen?style=flat-square)](https://nodejs.org)
+
 Validate npm package age to protect your supply chain from very-new or unvetted packages.
 
 Lightweight, fast, and configurable validator that can be used as a CLI (git/hooks / CI) or programmatically in Node.js projects.
