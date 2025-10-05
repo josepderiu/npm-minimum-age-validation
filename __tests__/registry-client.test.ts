@@ -80,7 +80,7 @@ describe('RegistryClient', () => {
         return mockRequest as any;
       });
 
-      const result = await registryClient.getPackagesPublishDates(packages);
+      await registryClient.getPackagesPublishDates(packages);
 
       expect(mockHttps.get).toHaveBeenCalledWith(
         expect.stringContaining('lodash'),
