@@ -1,0 +1,97 @@
+{
+  "name": "@josepderiu/npm-minimum-age-validation",
+  "version": "1.0.0",
+  "description": "npm package age validator for supply chain security",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "validate-packages": "./bin/validate-packages",
+    "npm-security-check": "./bin/validate-packages"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint --config eslint.config.js 'src/**/*.ts'",
+    "lint:fix": "eslint --config eslint.config.js 'src/**/*.ts' --fix",
+    "lint:all": "eslint --config eslint.config.js 'src/**/*.ts' '__tests__/**/*.ts'",
+    "format": "prettier --write \"src/**/*.{ts,js,json,md}\" \"__tests__/**/*.{ts,js}\" \"*.{json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json,md}\" \"__tests__/**/*.{ts,js}\" \"*.{json,md}\"",
+    "security:check-versions": "node -e \"const pkg=require('./package.json');const deps=[...Object.entries(pkg.dependencies||{}),...Object.entries(pkg.devDependencies||{})];const unfixed=deps.filter(([k,v])=>v.includes('^')||v.includes('~')||v.includes('>')||v.includes('<'));if(unfixed.length){console.log('❌ Unfixed versions found:',unfixed);process.exit(1)}else{console.log('✅ All versions are pinned')}\"",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run test && npm run format:check && npm run security:check-versions",
+    "version": "npm run build",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "security",
+    "npm",
+    "supply-chain",
+    "git-hooks",
+    "husky",
+    "enterprise",
+    "josepderiu"
+  ],
+  "author": {
+    "name": "Josep Deriu",
+    "email": "jderiu@gmail.com"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/josepderiu/npm-minimum-age-validation.git",
+    "directory": "packages/npm-minimum-age-validation"
+  },
+  "bugs": {
+    "url": "https://github.com/josepderiu/npm-minimum-age-validation/issues"
+  },
+  "homepage": "https://github.com/josepderiu/npm-minimum-age-validation/tree/main/packages/npm-minimum-age-validation#readme",
+  "dependencies": {
+    "chalk": "4.1.2",
+    "commander": "14.0.1",
+    "fast-json-patch": "3.1.1",
+    "node-cache": "5.1.2",
+    "pino": "9.12.0"
+  },
+  "devDependencies": {
+    "@types/jest": "30.0.0",
+    "@types/node": "20.19.19",
+    "@types/pino": "7.0.4",
+    "@typescript-eslint/eslint-plugin": "8.41.0",
+    "@typescript-eslint/parser": "8.41.0",
+    "eslint": "9.36.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "5.5.4",
+    "jest": "29.7.0",
+    "pino-pretty": "13.1.1",
+    "prettier": "3.6.2",
+    "ts-jest": "29.4.1",
+    "typescript": "5.9.2"
+  },
+  "files": [
+    "dist/",
+    "bin/",
+    "README.md",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "restricted"
+  },
+  "peerDependencies": {
+    "husky": "9.1.7"
+  },
+  "peerDependenciesMeta": {
+    "husky": {
+      "optional": true
+    }
+  }
+}

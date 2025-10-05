@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.d.ts
+
+# Coverage
+coverage/
+
+# Logs
+*.log
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Cache
+.cache/
+
+# Ignore already formatted/generated files
+CHANGELOG.md
+LICENSE
