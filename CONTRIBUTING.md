@@ -154,16 +154,67 @@ npm-minimum-age-validation/
 └── package.json         # Package manifest
 ```
 
-## Publishing (Internal Only)
+## CI/CD Pipelines
 
-This package is private and should only be published to internal registry:
+This project uses GitHub Actions for automated testing, security scanning, and publishing.
+
+### Pull Request Validation
+
+When you create a PR, the following checks run automatically:
+
+- **Lint & Format Check**: ESLint and Prettier validation
+- **Build**: TypeScript compilation
+- **Test Matrix**: Tests on Node.js 16.x, 18.x, and 20.x
+- **Security Audit**: npm audit and dependency version checks
+- **Coverage**: Code coverage reporting
+
+All checks must pass before merging.
+
+### Continuous Integration (Main Branch)
+
+On every push to `main`:
+
+- Full validation suite runs
+- Build artifacts are uploaded
+- Coverage reports generated
+
+### Release & Publishing
+
+Automated NPM publishing via **tag-based releases**:
 
 ```bash
-npm version [patch|minor|major]
-npm publish
+# 1. Update CHANGELOG.md with new version notes
+# 2. Bump version (creates commit and tag)
+npm version patch  # or minor/major
+
+# 3. Push to GitHub (triggers automated release)
+git push origin main --tags
 ```
 
-The `prepublishOnly` script will automatically:
+The release pipeline automatically:
+- ✅ Runs all quality checks
+- ✅ Publishes to NPM with provenance
+- ✅ Creates GitHub Release with changelog
+- ✅ Uploads package artifacts
+
+See [Release Process](.github/RELEASE_PROCESS.md) for detailed instructions.
+
+### Security Scanning
+
+- **CodeQL**: Runs on every PR and weekly
+- **Dependabot**: Weekly dependency updates
+- **npm audit**: On every build
+
+## Publishing Requirements
+
+Before publishing, ensure:
+
+1. ✅ All CI checks pass
+2. ✅ CHANGELOG.md updated
+3. ✅ NPM_TOKEN secret configured (maintainers only)
+4. ✅ Version in package.json matches git tag
+
+The `prepublishOnly` script automatically verifies:
 
 1. Run all tests
 2. Run linting
@@ -172,3 +223,5 @@ The `prepublishOnly` script will automatically:
 ## Questions?
 
 - **Contact**: `jderiu@gmail.com`
+- **Issues**: https://github.com/josepderiu/npm-minimum-age-validation/issues
+- **Release Process**: See `.github/RELEASE_PROCESS.md`
