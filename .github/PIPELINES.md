@@ -13,12 +13,12 @@ Complete reference for GitHub Actions workflows, Dependabot, and automation conf
 **Jobs:**
 - **Lint & Format:** ESLint and Prettier checks
 - **Build:** TypeScript compilation
-- **Test:** Run tests on Node.js 20.x with coverage
+- **Test:** Run tests on Node.js 20.x and 22.x with coverage
 - **Coverage Upload:** Uploads to Codecov for PR coverage comparison
 - **Security Audit:** Check for vulnerabilities
 - **PR Summary:** Post results as PR comment
 
-**Node.js Version:** 20.x (minimum supported version)
+**Node.js Versions:** 20.x (minimum), 22.x (latest LTS)
 
 **Estimated time:** ~3-5 minutes
 
@@ -29,11 +29,19 @@ Complete reference for GitHub Actions workflows, Dependabot, and automation conf
 **Purpose:** Continuous validation and artifact generation
 
 **Jobs:**
-- All PR validation checks
-- Build artifact upload (30-day retention)
-- Coverage report upload to Codecov (updates main branch coverage badge)
+- **Validate:** Lint, format, build, test with coverage on Node.js 20.x
+- **Test Matrix:** Run tests on Node.js 20.x and 22.x
+- **Artifacts:** Build and coverage upload (30-day retention)
+- **Coverage:** Upload to Codecov (updates main branch coverage badge)
 
 **Estimated time:** ~5-7 minutes
+
+**Coverage Strategy:**
+- **PR Validation:** Uploads coverage for PR diff comparison (shows coverage impact of changes)
+- **CI Pipeline:** Uploads coverage from main branch (updates the coverage badge)
+- Both uploads use Node.js 20.x (minimum supported version) for consistency
+- Codecov uses PR coverage to show: "This PR will increase/decrease coverage by X%"
+- Codecov uses CI coverage to update the main branch badge percentage
 
 ### 3. Release Pipeline (`.github/workflows/release.yml`)
 
@@ -134,16 +142,25 @@ Edit `.github/dependabot.yml` to:
 
 ## Workflow Customization Examples
 
-### Node.js Version
+### Node.js Version Matrix
 
-All workflows use Node.js 20.x as the minimum supported version. To update:
+Tests run on multiple Node.js versions using a matrix strategy:
 
 ```yaml
-- name: Setup Node.js
-  uses: actions/setup-node@v4
-  with:
-    node-version: '20.x'  # Change to desired version
+strategy:
+  matrix:
+    node-version: ['20.x', '22.x']
+
+steps:
+  - name: Setup Node.js
+    uses: actions/setup-node@v5
+    with:
+      node-version: ${{ matrix.node-version }}
 ```
+
+**Current Matrix:** Node.js 20.x (minimum) and 22.x (latest LTS)
+
+**To add more versions:** Add to the `node-version` array in the matrix strategy
 
 **Note:** This project requires Node.js >=20.0.0 as specified in `package.json` engines field.
 

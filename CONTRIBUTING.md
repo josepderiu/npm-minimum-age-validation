@@ -164,7 +164,7 @@ When you create a PR, the following checks run automatically:
 
 - **Lint & Format Check**: ESLint and Prettier validation
 - **Build**: TypeScript compilation
-- **Tests**: Full test suite with coverage on Node.js 20.x
+- **Tests**: Full test suite with coverage on Node.js 20.x and 22.x
 - **Security Audit**: npm audit and dependency version checks
 - **Coverage**: Code coverage reporting to Codecov
 
@@ -174,7 +174,8 @@ All checks must pass before merging.
 
 On every push to `main`:
 
-- Full validation suite runs
+- Full validation suite runs on Node.js 20.x (minimum version)
+- Tests run on Node.js 20.x and 22.x
 - Build artifacts are uploaded
 - Coverage reports uploaded to Codecov
 
