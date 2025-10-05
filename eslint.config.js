@@ -9,8 +9,24 @@ module.exports = [
   // Global ignores - applies to all files
   { ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/*.d.ts', '**/bin/**'] },
 
-  // Base ESLint recommended rules for JS files
-  { files: ['**/*.js', '**/*.mjs', '**/*.cjs'], ...eslint.configs.recommended },
+  // Base ESLint recommended rules for JS files (CommonJS)
+  {
+    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+    ...eslint.configs.recommended,
+    languageOptions: {
+      globals: {
+        // Node.js CommonJS globals for config files
+        require: 'readonly',
+        module: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        exports: 'readonly',
+        process: 'readonly',
+        console: 'readonly',
+        Buffer: 'readonly',
+      },
+    },
+  },
 
   // Test files configuration - no type-aware linting (must come before general TypeScript config)
   // More specific patterns must come first in flat config
@@ -91,6 +107,9 @@ module.exports = [
         clearInterval: 'readonly',
         setImmediate: 'readonly',
         clearImmediate: 'readonly',
+        // CommonJS globals for module detection
+        require: 'readonly',
+        module: 'readonly',
       },
     },
     plugins: { '@typescript-eslint': tsPlugin, prettier: prettierPlugin },

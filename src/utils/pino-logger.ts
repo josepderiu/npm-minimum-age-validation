@@ -35,26 +35,47 @@ export class PinoLogger implements ILogger {
   constructor(level: LogLevel = 'info', pretty: boolean = process.stdout.isTTY) {
     const pinoLevel = this.mapLogLevel(level);
 
+    // Check if pino-pretty is available (it's an optional devDependency)
+    let transport: pino.TransportSingleOptions | undefined;
+    if (pretty) {
+      transport = this.tryLoadPinoPretty();
+    }
+
     this.logger = pino({
       level: pinoLevel,
       // Pretty printing for development, JSON for production
-      transport: pretty
-        ? {
-            target: 'pino-pretty',
-            options: {
-              colorize: true,
-              translateTime: 'SYS:standard',
-              ignore: 'pid,hostname',
-              singleLine: false,
-              messageFormat: '{msg}',
-            },
-          }
-        : undefined,
+      transport,
       formatters: { level: (label) => ({ level: label }) },
       timestamp: pino.stdTimeFunctions.isoTime,
       // Async logging for non-blocking I/O
       base: undefined, // Remove default fields (pid, hostname) for cleaner output
     });
+  }
+
+  /**
+   * Attempts to load pino-pretty transport if available.
+   * Falls back to undefined (JSON logging) if not installed.
+   *
+   * @returns Transport configuration or undefined
+   */
+  private tryLoadPinoPretty(): pino.TransportSingleOptions | undefined {
+    try {
+      // Check if pino-pretty module is available
+      require.resolve('pino-pretty');
+      return {
+        target: 'pino-pretty',
+        options: {
+          colorize: true,
+          translateTime: 'SYS:standard',
+          ignore: 'pid,hostname',
+          singleLine: false,
+          messageFormat: '{msg}',
+        },
+      };
+    } catch {
+      // pino-pretty not available, fall back to JSON logging
+      return undefined;
+    }
   }
 
   /**

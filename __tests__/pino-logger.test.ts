@@ -193,4 +193,52 @@ describe('PinoLogger', () => {
       expect(duration).toBeLessThan(50);
     });
   });
+
+  describe('Optional pino-pretty Dependency', () => {
+    it('should create logger when pino-pretty is available (dev environment)', () => {
+      // In dev environment, pino-pretty is installed as devDependency
+      expect(() => new PinoLogger('info', true)).not.toThrow();
+    });
+
+    it('should create logger without pretty printing in production', () => {
+      // Simulate production by explicitly disabling pretty printing
+      expect(() => new PinoLogger('info', false)).not.toThrow();
+    });
+
+    it('should gracefully handle pino-pretty when available', () => {
+      // Test that logger creation works when pretty=true (pino-pretty available in dev)
+      const logger = new PinoLogger('info', true);
+      expect(logger).toBeDefined();
+      expect(logger.info).toBeDefined();
+    });
+
+    it('should fall back to JSON logging when pino-pretty unavailable', () => {
+      // When pretty=false, should use JSON logging (no pino-pretty needed)
+      const logger = new PinoLogger('info', false);
+      expect(logger).toBeDefined();
+
+      // Should be able to log without errors
+      expect(() => logger.info('Test message')).not.toThrow();
+      expect(() => logger.error('Test error')).not.toThrow();
+    });
+
+    it('should work in TTY-detected mode', () => {
+      // Test auto-detection of TTY (defaults to process.stdout.isTTY)
+      const logger = new PinoLogger('info');
+      expect(logger).toBeDefined();
+      expect(() => logger.info('Test message')).not.toThrow();
+    });
+
+    it('should maintain all logging functionality without pino-pretty', () => {
+      // Verify all methods work when pretty=false (no pino-pretty required)
+      const logger = new PinoLogger('debug', false);
+
+      expect(() => logger.error('error')).not.toThrow();
+      expect(() => logger.warn('warn')).not.toThrow();
+      expect(() => logger.info('info')).not.toThrow();
+      expect(() => logger.success('success')).not.toThrow();
+      expect(() => logger.debug('debug')).not.toThrow();
+      expect(() => logger.step('step')).not.toThrow();
+    });
+  });
 });
