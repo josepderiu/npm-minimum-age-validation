@@ -8,8 +8,6 @@ updates:
       day: "monday"
       time: "06:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "josepderiu"
     assignees:
       - "josepderiu"
     commit-message:
@@ -37,8 +35,6 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 5
-    reviewers:
-      - "josepderiu"
     commit-message:
       prefix: "ci"
     labels:
