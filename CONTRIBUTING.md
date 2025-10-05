@@ -164,9 +164,9 @@ When you create a PR, the following checks run automatically:
 
 - **Lint & Format Check**: ESLint and Prettier validation
 - **Build**: TypeScript compilation
-- **Test Matrix**: Tests on Node.js 16.x, 18.x, and 20.x
+- **Tests**: Full test suite with coverage on Node.js 20.x
 - **Security Audit**: npm audit and dependency version checks
-- **Coverage**: Code coverage reporting
+- **Coverage**: Code coverage reporting to Codecov
 
 All checks must pass before merging.
 
@@ -180,25 +180,29 @@ On every push to `main`:
 
 ### Release & Publishing
 
-Automated NPM publishing via **tag-based releases**:
+Automated NPM publishing via **tag-based releases** using `standard-version`:
 
 ```bash
-# 1. Update CHANGELOG.md with new version notes
-# 2. Bump version (creates commit and tag)
-npm version patch  # or minor/major
+# 1. Bump version and update CHANGELOG.md automatically
+npm run release:patch  # for patch version (1.0.0 -> 1.0.1)
+npm run release:minor  # for minor version (1.0.0 -> 1.1.0)
+npm run release:major  # for major version (1.0.0 -> 2.0.0)
 
-# 3. Push to GitHub (triggers automated release)
-git push origin main --tags
+# This creates a commit with updated package.json and CHANGELOG.md,
+# and creates a git tag (e.g., v1.0.1)
+
+# 2. Push to GitHub (triggers automated release)
+git push --follow-tags origin main
 ```
 
 The release pipeline automatically:
 
-- ✅ Runs all quality checks
+- ✅ Runs all quality checks (lint, test, build)
 - ✅ Publishes to NPM with provenance
 - ✅ Creates GitHub Release with changelog
 - ✅ Uploads package artifacts
 
-See [Release Process](.github/RELEASE_PROCESS.md) for detailed instructions.
+See [Pipelines Documentation](.github/PIPELINES.md) for detailed instructions.
 
 ### Security Scanning
 
@@ -225,4 +229,4 @@ The `prepublishOnly` script automatically verifies:
 
 - **Contact**: `jderiu@gmail.com`
 - **Issues**: https://github.com/josepderiu/npm-minimum-age-validation/issues
-- **Release Process**: See `.github/RELEASE_PROCESS.md`
+- **Pipelines & Release Process**: See `.github/PIPELINES.md`
