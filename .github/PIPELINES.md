@@ -14,6 +14,7 @@ Complete reference for GitHub Actions workflows, Dependabot, and automation conf
 - **Lint & Format:** ESLint and Prettier checks
 - **Build:** TypeScript compilation
 - **Test:** Run tests on Node.js 20.x with coverage
+- **Coverage Upload:** Uploads to Codecov for PR coverage comparison
 - **Security Audit:** Check for vulnerabilities
 - **PR Summary:** Post results as PR comment
 
@@ -30,7 +31,7 @@ Complete reference for GitHub Actions workflows, Dependabot, and automation conf
 **Jobs:**
 - All PR validation checks
 - Build artifact upload (30-day retention)
-- Coverage report upload
+- Coverage report upload to Codecov (updates main branch coverage badge)
 
 **Estimated time:** ~5-7 minutes
 
