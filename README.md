@@ -141,4 +141,4 @@ This project is focused on supply-chain safety. It favors pinned dependencies an
 
 ## Author
 
-Josep Deriu (<jderiu@gmail.com>)
+Josep de Riu (<jderiu@gmail.com>)
