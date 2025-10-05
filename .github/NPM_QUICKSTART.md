@@ -1,275 +1,193 @@
-# NPM Publishing Quick Start 🚀
+# NPM Publishing Quick Start
 
-**5-minute setup to publish your package to NPM**
+Complete guide to set up NPM publishing and automated releases with changelog generation.
 
----
+## Prerequisites
 
-## Quick Setup Flow
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ 1. CREATE NPM TOKEN                                          │
-│    ↓                                                         │
-│    https://www.npmjs.com/settings/YOUR_USERNAME/tokens      │
-│    → Generate New Token → Automation                        │
-│    → Copy token (npm_xxxxx...)                              │
-└─────────────────────────────────────────────────────────────┘
-                            ↓
-┌─────────────────────────────────────────────────────────────┐
-│ 2. ADD TO GITHUB SECRETS                                     │
-│    ↓                                                         │
-│    GitHub Repo → Settings → Secrets → Actions               │
-│    → New repository secret                                  │
-│    Name: NPM_TOKEN                                           │
-│    Value: [paste token]                                      │
-└─────────────────────────────────────────────────────────────┘
-                            ↓
-┌─────────────────────────────────────────────────────────────┐
-│ 3. PUBLISH YOUR FIRST RELEASE                                │
-│    ↓                                                         │
-│    npm version patch                                         │
-│    git push origin main --tags                               │
-│    → Check GitHub Actions for release progress              │
-└─────────────────────────────────────────────────────────────┘
-                            ↓
-┌─────────────────────────────────────────────────────────────┐
-│ 4. VERIFY PUBLISHED                                          │
-│    ↓                                                         │
-│    https://www.npmjs.com/package/@josepderiu/npm-minimum-age-validation │
-│    npm install @josepderiu/npm-minimum-age-validation       │
-└─────────────────────────────────────────────────────────────┘
-```
+- NPM account with publishing rights
+- GitHub repository with admin access
+- Node.js and npm installed locally
 
 ---
 
-## Step 1: Get Your NPM Token (2 minutes)
+## Part 1: Initial Setup (5 minutes)
 
-### Option A: Using Browser
+### Step 1: Get NPM Token
+
+1. Visit https://www.npmjs.com/settings/YOUR_USERNAME/tokens
+2. Generate new token → Select **"Automation"** type
+3. Copy the token (starts with `npm_`)
+
+### Step 2: Add GitHub Secret
+
+1. Go to repository **Settings → Secrets and variables → Actions**
+2. Click **"New repository secret"**
+3. Name: `NPM_TOKEN` (exactly this!)
+4. Value: Paste your NPM token
+5. Click **"Add secret"**
+
+### Step 3: Verify Configuration
+
 ```bash
-# Open NPM tokens page
-xdg-open https://www.npmjs.com/settings/$(npm whoami)/tokens
-```
+# Ensure package.json has public access
+grep -A2 "publishConfig" package.json
+# Should show: "access": "public"
 
-### Option B: Manual Navigation
-1. Login to https://www.npmjs.com
-2. Click your avatar → **Access Tokens**
-3. Click **"Generate New Token"**
-4. Select **"Automation"** (required for CI/CD!)
-5. Name it: `github-actions-npm-minimum-age-validation`
-6. Click **"Generate Token"**
-7. **COPY THE TOKEN** (starts with `npm_`)
-
-⚠️ **Save it immediately - you can't see it again!**
-
----
-
-## Step 2: Add Token to GitHub (1 minute)
-
-### Quick Link
-```bash
-# Open GitHub secrets page directly
-xdg-open https://github.com/josepderiu/npm-minimum-age-validation/settings/secrets/actions
-```
-
-### Manual Steps
-1. Go to your GitHub repository
-2. Click **Settings** (top menu)
-3. Scroll to **Secrets and variables** → **Actions**
-4. Click **"New repository secret"**
-5. Fill in:
-   - **Name:** `NPM_TOKEN` (exactly this!)
-   - **Secret:** Paste your NPM token
-6. Click **"Add secret"**
-
-✅ **Done! Secret is configured**
-
----
-
-## Step 3: Publish Your First Release (1 minute)
-
-### Pre-flight Check
-```bash
-# Ensure everything is clean
-git status                 # Should be clean
-npm test                   # Should pass
-npm run lint:all           # Should pass
-npm run build              # Should succeed
-```
-
-### Create Release
-```bash
-# Option 1: Patch release (1.0.0 → 1.0.1)
-npm version patch -m "chore(release): %s"
-
-# Option 2: Minor release (1.0.0 → 1.1.0)
-npm version minor -m "feat(release): %s"
-
-# Option 3: Major release (1.0.0 → 2.0.0)
-npm version major -m "chore(release): %s [breaking]"
-
-# Push to trigger release workflow
-git push origin main --tags
-```
-
-### Monitor Release
-```bash
-# Watch the workflow run
-xdg-open https://github.com/josepderiu/npm-minimum-age-validation/actions
-```
-
-You'll see:
-- ✅ Validate (tests, lint, build)
-- ✅ Publish NPM (publishes to npm registry)
-- ✅ Create GitHub Release (creates release with changelog)
-- ✅ Notify (sends notifications)
-
-⏱️ **Takes ~2-3 minutes to complete**
-
----
-
-## Step 4: Verify Publication (1 minute)
-
-### Check NPM Registry
-```bash
-# View your package on NPM
-xdg-open https://www.npmjs.com/package/@josepderiu/npm-minimum-age-validation
-
-# Or check from CLI
-npm view @josepderiu/npm-minimum-age-validation
-```
-
-### Test Installation
-```bash
-# Test in a temporary directory
-cd /tmp
-mkdir test-install && cd test-install
-npm init -y
-npm install @josepderiu/npm-minimum-age-validation
-
-# Verify it works
-npx validate-packages --help
-```
-
-### Check GitHub Release
-```bash
-# View GitHub releases page
-xdg-open https://github.com/josepderiu/npm-minimum-age-validation/releases
+# Verify workflows exist
+ls .github/workflows/
+# Should see: pr-validation.yml, ci.yml, release.yml, codeql.yml
 ```
 
 ---
 
-## 🎉 You're Done!
+## Part 2: Automated Releases with Changelog (2 minutes per release)
 
-Your package is now:
-- ✅ Published to NPM registry
-- ✅ Installable by anyone: `npm install @josepderiu/npm-minimum-age-validation`
-- ✅ Automatically released on new tags
-- ✅ Secured with GitHub Actions
-- ✅ Protected with provenance
+This project uses **standard-version** for automated changelog generation and version management.
 
----
+### How It Works
 
-## What Happens on Each Release?
+When you run `npm run release`:
+1. ✅ Analyzes git commits since last release
+2. ✅ Determines version bump (patch/minor/major) automatically
+3. ✅ Updates CHANGELOG.md with categorized changes
+4. ✅ Bumps version in package.json
+5. ✅ Creates git commit: `chore(release): v1.0.0`
+6. ✅ Creates git tag: `v1.0.0`
 
-```
-git push --tags
-      ↓
-┌─────────────────┐
-│ GitHub Actions  │
-│ Trigger         │
-└─────────────────┘
-      ↓
-┌─────────────────┐
-│ Run Tests       │  (Jest, coverage)
-│ Run Linter      │  (ESLint)
-│ Build TypeScript│  (tsc)
-└─────────────────┘
-      ↓
-┌─────────────────┐
-│ Publish to NPM  │  (with provenance)
-└─────────────────┘
-      ↓
-┌─────────────────┐
-│ Create GitHub   │  (with changelog)
-│ Release         │
-└─────────────────┘
-      ↓
-🎉 Package Live!
+### Commit Message Format (Conventional Commits)
+
+Use this format for automatic changelog generation:
+
+| Type       | Description          | Changelog Section | Version Bump |
+| ---------- | -------------------- | ----------------- | ------------ |
+| `feat:`    | New feature          | Features          | Minor        |
+| `fix:`     | Bug fix              | Bug Fixes         | Patch        |
+| `perf:`    | Performance          | Performance       | Patch        |
+| `docs:`    | Documentation        | Documentation     | -            |
+| `refactor:` | Code refactoring    | Code Refactoring  | -            |
+| `chore:`   | Maintenance          | (hidden)          | -            |
+| `test:`    | Tests                | (hidden)          | -            |
+| `ci:`      | CI/CD changes        | (hidden)          | -            |
+
+**Examples:**
+```bash
+git commit -m "feat: add workspace support"
+git commit -m "fix: prevent race condition"
+git commit -m "docs: update API documentation"
+git commit -m "chore: update dependencies"
 ```
 
----
+### Breaking Changes
 
-## Common Commands
+To trigger a **major** version bump, add `BREAKING CHANGE:` in commit footer:
 
 ```bash
-# Check if package name is available
-npm view @josepderiu/npm-minimum-age-validation
+git commit -m "feat: redesign API
 
-# Check your published versions
-npm view @josepderiu/npm-minimum-age-validation versions
-
-# Check who can publish
-npm owner ls @josepderiu/npm-minimum-age-validation
-
-# Test package locally before publishing
-npm pack
-# Creates: josepderiu-npm-minimum-age-validation-1.0.0.tgz
-
-# Install from local tarball
-npm install ./josepderiu-npm-minimum-age-validation-1.0.0.tgz
+BREAKING CHANGE: The old API has been removed."
 ```
 
----
+This bumps from 1.0.0 → 2.0.0 and adds a "BREAKING CHANGES" section to changelog.
 
-## Troubleshooting
+### Release Commands
 
-### "403 Forbidden" Error
-- Check NPM_TOKEN is **Automation** type (not Classic)
-- Regenerate token and update GitHub secret
-
-### "404 Not Found" Error  
-- Package name might be taken
-- Check: `npm view @josepderiu/npm-minimum-age-validation`
-- Your package is scoped (`@josepderiu/`), so it should be fine
-
-### "Version mismatch" Error
 ```bash
-# Check versions match
-git describe --tags        # Tag version
-grep version package.json  # Package version
+# Automatic version bump (recommended)
+npm run release
 
-# Fix if needed
-npm version 1.0.1
-git push origin main --tags
+# Manual version bump
+npm run release:patch    # 1.0.0 → 1.0.1
+npm run release:minor    # 1.0.0 → 1.1.0
+npm run release:major    # 1.0.0 → 2.0.0
+
+# Preview changes without modifying files
+npm run release -- --dry-run
+
+# First release
+npm run release -- --first-release --release-as 1.0.0
 ```
 
-### "Email not verified" Error
-- Go to: https://www.npmjs.com/settings/YOUR_USERNAME/profile
-- Click "Resend verification email"
-- Verify and retry
+### Complete Release Workflow
+
+```bash
+# 1. Make changes with conventional commits
+git add .
+git commit -m "feat: add new feature"
+git commit -m "fix: resolve bug"
+
+# 2. Run tests locally
+npm test
+npm run lint:all
+
+# 3. Create release (auto-updates CHANGELOG.md)
+npm run release
+
+# 4. Review changes
+cat CHANGELOG.md
+git show HEAD
+
+# 5. Push to trigger GitHub Actions
+git push --follow-tags origin main
+
+# 6. Monitor deployment
+# Visit: https://github.com/OWNER/REPO/actions
+```
+
+### What Happens After Push
+
+1. GitHub Actions detects the tag
+2. Runs all tests and checks
+3. Builds the package
+4. Publishes to NPM with provenance
+5. Creates GitHub release with changelog
 
 ---
 
-## Next Steps
+## Part 3: Troubleshooting
 
-1. ✅ **Add status badges** to README.md
-2. ✅ **Set up Codecov** for coverage tracking
-3. ✅ **Configure branch protection** on main
-4. ✅ **Enable Dependabot** alerts (already configured!)
-5. ✅ **Add more keywords** to package.json for discoverability
+### "No commits since last release"
+
+You need commits after the last tag:
+```bash
+git log --oneline
+git tag  # Check last tag
+```
+
+### Wrong Version Bump
+
+Manually specify version:
+```bash
+npm run release -- --release-as 1.2.3
+```
+
+### Need to Undo Before Pushing
+
+```bash
+git tag -d v1.0.0           # Remove tag
+git reset --hard HEAD~1      # Reset commit
+```
+
+### Package Not Publishing
+
+Check:
+1. `NPM_TOKEN` secret is set correctly
+2. Package name is available (or you own it)
+3. `package.json` has `"access": "public"` for scoped packages
+4. GitHub Actions logs for errors
+
+---
+
+## Configuration Files
+
+- `.versionrc.json` - Controls changelog generation format
+- `.github/workflows/release.yml` - Release automation
+- `.github/dependabot.yml` - Dependency updates
+- `CHANGELOG.md` - Auto-generated changelog
 
 ---
 
 ## Resources
 
-- **Full Setup Guide**: `.github/NPM_PUBLISHING_SETUP.md`
-- **Release Process**: `.github/RELEASE_PROCESS.md`
-- **Pipeline Docs**: `.github/PIPELINES.md`
-- **NPM Docs**: https://docs.npmjs.com/
-- **Your Package**: https://www.npmjs.com/package/@josepderiu/npm-minimum-age-validation
-
----
-
-**Total Setup Time: ~5 minutes** ⏱️
-
-**Ready? Start with Step 1!** 🚀
+- [Conventional Commits](https://www.conventionalcommits.org/)
+- [standard-version](https://github.com/conventional-changelog/standard-version)
+- [Semantic Versioning](https://semver.org/)

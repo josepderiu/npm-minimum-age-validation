@@ -1,196 +1,176 @@
-# GitHub Actions Pipelines
+# CI/CD Pipelines & Automation
 
-This repository uses GitHub Actions for automated CI/CD. Here's what's configured:
+Complete reference for GitHub Actions workflows, Dependabot, and automation configuration.
 
-## 📋 Pipeline Overview
+## Workflows Overview
 
+### 1. PR Validation (`.github/workflows/pr-validation.yml`)
+
+**Trigger:** Pull request to any branch
+
+**Purpose:** Ensure code quality before merging
+
+**Jobs:**
+- **Lint & Format:** ESLint and Prettier checks
+- **Build:** TypeScript compilation
+- **Test Matrix:** Run tests on Node.js 16.x, 18.x, 20.x
+- **Security Audit:** Check for vulnerabilities
+- **PR Summary:** Post results as PR comment
+
+**Estimated time:** ~5-7 minutes
+
+### 2. CI Pipeline (`.github/workflows/ci.yml`)
+
+**Trigger:** Push to `main` branch, manual dispatch
+
+**Purpose:** Continuous validation and artifact generation
+
+**Jobs:**
+- All PR validation checks
+- Build artifact upload (30-day retention)
+- Coverage report upload
+
+**Estimated time:** ~5-7 minutes
+
+### 3. Release Pipeline (`.github/workflows/release.yml`)
+
+**Trigger:** Tag push matching `v*.*.*` (e.g., `v1.0.0`)
+
+**Purpose:** Automated NPM publishing
+
+**Jobs:**
+- Pre-release validation (tests, lint, build)
+- Version verification (tag matches package.json)
+- NPM publish with provenance
+- GitHub release creation with changelog
+
+**Estimated time:** ~3-4 minutes
+
+**Environment:** `npm-production` (optional, for deployment history)
+
+### 4. CodeQL Security Scanning (`.github/workflows/codeql.yml`)
+
+**Trigger:** 
+- Weekly schedule (Mondays at 6 AM UTC)
+- Push to `main`
+- Pull requests to `main`
+
+**Purpose:** Automated security vulnerability detection
+
+**Languages:** JavaScript, TypeScript
+
+**Estimated time:** ~2-3 minutes
+
+---
+
+## Dependabot Configuration
+
+### What It Does
+
+Automatically creates PRs for:
+- NPM package updates (weekly)
+- GitHub Actions updates (weekly)
+- Security vulnerabilities (immediate)
+
+### Current Settings
+
+**NPM Dependencies:**
+- Schedule: Weekly on Mondays at 6 AM
+- Grouping: All patch updates in single PR
+- Ignores: Major version updates (for stability)
+- Labels: `dependencies`, `automated`
+
+**GitHub Actions:**
+- Schedule: Weekly on Mondays
+- Labels: `github-actions`, `automated`
+
+### Managing Dependabot PRs
+
+**Review Process:**
+1. Dependabot creates PR with update
+2. CI runs automatically
+3. Review changes and CI results
+4. Merge if tests pass
+
+**Dependabot Commands** (comment on PRs):
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     Developer Workflow                       │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │  Create PR      │
-                    └─────────────────┘
-                              │
-                              ▼
-        ┌────────────────────────────────────────┐
-        │  PR Validation Pipeline (REQUIRED)     │
-        │  • Lint & Format Check                 │
-        │  • Build TypeScript                    │
-        │  • Test Matrix (Node 16/18/20)         │
-        │  • Security Audit                      │
-        │  • Coverage Report                     │
-        └────────────────────────────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │  Merge to main  │
-                    └─────────────────┘
-                              │
-                              ▼
-        ┌────────────────────────────────────────┐
-        │  CI Pipeline (on push to main)         │
-        │  • Full validation suite               │
-        │  • Build artifacts upload              │
-        │  • Coverage tracking                   │
-        └────────────────────────────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │ npm version     │
-                    │ git push --tags │
-                    └─────────────────┘
-                              │
-                              ▼
-        ┌────────────────────────────────────────┐
-        │  Release Pipeline (on tag v*.*.*)      │
-        │  • Pre-release validation              │
-        │  • Publish to NPM                      │
-        │  • Create GitHub Release               │
-        │  • Upload package artifacts            │
-        └────────────────────────────────────────┘
-```
-
-## 🔧 Pipeline Files
-
-### 1. **pr-validation.yml** - Pull Request Checks
-- **Trigger**: PRs to main/develop
-- **Purpose**: Quality gates before merge
-- **Jobs**:
-  - Lint & Format Check
-  - TypeScript Build
-  - Test Matrix (Node 16.x, 18.x, 20.x)
-  - Security Audit
-  - PR Summary
-
-### 2. **ci.yml** - Continuous Integration
-- **Trigger**: Push to main branch
-- **Purpose**: Validate main branch health
-- **Jobs**:
-  - Full validation suite
-  - Build artifacts upload
-  - Coverage reporting
-
-### 3. **release.yml** - Release & NPM Publish
-- **Trigger**: Git tags matching `v*.*.*`
-- **Purpose**: Automated NPM publishing
-- **Jobs**:
-  - Pre-release validation
-  - NPM publish with provenance
-  - GitHub Release creation
-  - Package artifact upload
-- **Environment**: `npm-production`
-
-### 4. **codeql.yml** - Security Scanning
-- **Trigger**: PR, push to main, weekly schedule, manual
-- **Purpose**: Advanced security analysis
-- **Jobs**:
-  - CodeQL analysis for JavaScript/TypeScript
-  - Security vulnerability detection
-
-### 5. **dependabot.yml** - Dependency Updates
-- **Schedule**: Weekly (Mondays at 6 AM UTC)
-- **Purpose**: Automated dependency updates
-- **Features**:
-  - NPM package updates
-  - GitHub Actions version updates
-  - Grouped patch updates
-  - Automatic PR creation
-
-## 🔐 Required Secrets
-
-Configure these in GitHub repository settings:
-
-| Secret | Purpose | How to Get |
-|--------|---------|------------|
-| `NPM_TOKEN` | Publish to NPM registry | https://www.npmjs.com/settings/~/tokens (Automation token) |
-
-**Setup Steps**:
-1. Go to https://www.npmjs.com/settings/~/tokens
-2. Create new "Automation" token with "Publish" permission
-3. Copy the token
-4. Go to GitHub repo → Settings → Secrets → Actions
-5. Create new secret: `NPM_TOKEN` with the copied token
-
-## 🎯 GitHub Environments
-
-The release pipeline uses the `npm-production` environment:
-
-**To configure**:
-1. Go to repo Settings → Environments
-2. Create environment: `npm-production`
-3. (Optional) Add protection rules:
-   - Required reviewers
-   - Wait timer
-   - Deployment branches: `main` only
-
-## 📊 Status Badges
-
-Add these to your README.md:
-
-```markdown
-[![CI](https://github.com/josepderiu/npm-minimum-age-validation/actions/workflows/ci.yml/badge.svg)](https://github.com/josepderiu/npm-minimum-age-validation/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/josepderiu/npm-minimum-age-validation/actions/workflows/codeql.yml/badge.svg)](https://github.com/josepderiu/npm-minimum-age-validation/actions/workflows/codeql.yml)
-[![npm version](https://badge.fury.io/js/@josepderiu%2Fnpm-minimum-age-validation.svg)](https://www.npmjs.com/package/@josepderiu/npm-minimum-age-validation)
+@dependabot rebase          # Rebase PR
+@dependabot merge           # Auto-merge after CI
+@dependabot squash and merge # Squash and merge
+@dependabot close           # Close PR
+@dependabot ignore this major version
+@dependabot ignore this dependency
 ```
 
-## 🚀 Quick Start
+**Security Updates:**
+- High priority - merge quickly
+- Labeled with `security`
+- May bypass normal grouping
 
-### For Contributors
+### Customization
 
-1. Create feature branch
-2. Make changes
-3. Create PR → Automatic validation runs
-4. Address any failures
-5. Merge when all checks pass
+Edit `.github/dependabot.yml` to:
+- Change update frequency (`daily`, `weekly`, `monthly`)
+- Adjust grouping strategy
+- Allow/ignore specific dependencies
+- Modify PR limit (`open-pull-requests-limit`)
 
-### For Maintainers (Releases)
+---
 
-```bash
-# 1. Update CHANGELOG.md
-nano CHANGELOG.md
+## Workflow Files Reference
 
-# 2. Bump version
-npm version patch  # or minor/major
+| File                           | Trigger              | Purpose                    |
+| ------------------------------ | -------------------- | -------------------------- |
+| `pr-validation.yml`            | Pull requests        | Code quality gates         |
+| `ci.yml`                       | Push to main         | Continuous validation      |
+| `release.yml`                  | Tag `v*.*.*`         | NPM publishing             |
+| `codeql.yml`                   | Schedule/push/PR     | Security scanning          |
+| `.github/dependabot.yml`       | Weekly schedule      | Dependency updates         |
 
-# 3. Push tag (triggers release)
-git push origin main --tags
+---
+
+## Workflow Customization Examples
+
+### Change Node.js Versions
+
+Edit the matrix in `pr-validation.yml` and `ci.yml`:
+```yaml
+strategy:
+  matrix:
+    node-version: [18.x, 20.x, 22.x]  # Update versions
 ```
 
-See [RELEASE_PROCESS.md](RELEASE_PROCESS.md) for full release documentation.
+### Add Environment Variables
 
-## 🔍 Monitoring
+Add to workflow:
+```yaml
+env:
+  NODE_ENV: production
+  CUSTOM_VAR: value
+```
 
-- **Actions Tab**: https://github.com/josepderiu/npm-minimum-age-validation/actions
-- **Security Tab**: https://github.com/josepderiu/npm-minimum-age-validation/security
-- **NPM Package**: https://www.npmjs.com/package/@josepderiu/npm-minimum-age-validation
+### Adjust Timeout
 
-## 🛠️ Troubleshooting
+```yaml
+jobs:
+  test:
+    timeout-minutes: 15  # Default is 360
+```
 
-### Pipeline failing?
-- Check the Actions tab for detailed logs
-- Common issues:
-  - Linting errors → Run `npm run lint:fix`
-  - Test failures → Run `npm test` locally
-  - Build errors → Run `npm run build` locally
-  - Security audit → Run `npm audit`
+### Change Artifact Retention
 
-### Release not working?
-- Verify `NPM_TOKEN` secret is set correctly
-- Check tag format matches `v*.*.*` (e.g., `v1.0.0`)
-- Ensure package.json version matches tag version
-- Check workflow run logs for errors
+```yaml
+- uses: actions/upload-artifact@v4
+  with:
+    name: dist
+    retention-days: 7  # Default is 30
+```
 
-### Dependabot PRs?
-- Review changes carefully
-- Run tests locally if needed
-- Merge when ready (triggers CI)
+---
 
-## 📚 Additional Resources
+## Resources
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [NPM Provenance](https://docs.npmjs.com/generating-provenance-statements)
-- [CodeQL](https://codeql.github.com/)
-- [Dependabot](https://docs.github.com/en/code-security/dependabot)
+- [Dependabot Configuration](https://docs.github.com/en/code-security/dependabot)
+- [GitHub Free Features](https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-free-for-personal-accounts)
+- [Branch Protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches)
