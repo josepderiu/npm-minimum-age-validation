@@ -13,11 +13,11 @@ Complete reference for GitHub Actions workflows, Dependabot, and automation conf
 **Jobs:**
 - **Lint & Format:** ESLint and Prettier checks
 - **Build:** TypeScript compilation
-- **Test:** Run tests on Node.js 20.x with coverage
+- **Test:** Run tests on Node.js 20.x and 22.x with coverage
 - **Security Audit:** Check for vulnerabilities
 - **PR Summary:** Post results as PR comment
 
-**Node.js Version:** 20.x (minimum supported version)
+**Node.js Versions:** 20.x (minimum), 22.x (latest LTS)
 
 **Estimated time:** ~3-5 minutes
 
@@ -28,9 +28,10 @@ Complete reference for GitHub Actions workflows, Dependabot, and automation conf
 **Purpose:** Continuous validation and artifact generation
 
 **Jobs:**
-- All PR validation checks
-- Build artifact upload (30-day retention)
-- Coverage report upload
+- **Validate:** Lint, format, build, test with coverage on Node.js 20.x
+- **Test Matrix:** Run tests on Node.js 20.x and 22.x
+- **Artifacts:** Build and coverage upload (30-day retention)
+- **Coverage:** Upload to Codecov (updates main branch coverage badge)
 
 **Estimated time:** ~5-7 minutes
 
