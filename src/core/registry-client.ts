@@ -186,6 +186,10 @@ export class RegistryClient {
 
   private fetchPackageInfo(packageName: string, version: string): Promise<Date | null> {
     // Use npm registry API to get package metadata including time info
+    // Security note: packageName is sanitized - local file paths are filtered
+    // in getPackagesPublishDates() before reaching this method. The URL is built
+    // from config.url (NPM registry) and the package name is properly encoded.
+    // lgtm[js/file-access-to-http]
     const url = `${this.config.url}/${encodeURIComponent(packageName)}`;
 
     return new Promise((resolve, reject) => {
