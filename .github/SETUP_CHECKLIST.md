@@ -1,7 +1,18 @@
 # CI/CD Pipeline Setup Checklist
 
 ## ✅ Completed
-- [x] PR validation workflow (`.github/workflows/pr-validation.yml`)
+- [x] PR validat## 📖 Documentation
+
+- **🚀 Quick Start (5 min)**: See `.github/NPM_QUICKSTART.md` ← **START HERE!**
+- **📚 Full Setup Guide**: See `.github/NPM_PUBLISHING_SETUP.md`
+- **Release Process**: See `.github/RELEASE_PROCESS.md`
+- **Pipeline Overview**: See `.github/PIPELINES.md`
+- **Contributing Guide**: See `CONTRIBUTING.md`
+
+---
+
+**Priority**: Configure NPM_TOKEN first to enable automated publishing!
+**New to NPM publishing? Start with `.github/NPM_QUICKSTART.md`**low (`.github/workflows/pr-validation.yml`)
 - [x] CI workflow for main branch (`.github/workflows/ci.yml`)
 - [x] Tag-based release workflow (`.github/workflows/release.yml`)
 - [x] CodeQL security scanning (`.github/workflows/codeql.yml`)
