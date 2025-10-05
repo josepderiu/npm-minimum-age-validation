@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### [1.0.1](https://github.com/josepderiu/npm-minimum-age-validation/compare/v1.0.0...v1.0.1) (2025-10-05)
+
+
+### Bug Fixes
+
+* address CodeQL security alerts with comments and code cleanup ([030b23b](https://github.com/josepderiu/npm-minimum-age-validation/commit/030b23b99545e237cb61c183db41b5845f3dd9df))
+* make pino-pretty optional to prevent runtime errors in production ([05bcc88](https://github.com/josepderiu/npm-minimum-age-validation/commit/05bcc88ec5377709b2f4c6ea06145d6d988306fe))
+
 ## 1.0.0 (2025-10-05)
 
 
