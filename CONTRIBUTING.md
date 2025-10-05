@@ -176,7 +176,7 @@ On every push to `main`:
 
 - Full validation suite runs
 - Build artifacts are uploaded
-- Coverage reports generated
+- Coverage reports uploaded to Codecov
 
 ### Release & Publishing
 
