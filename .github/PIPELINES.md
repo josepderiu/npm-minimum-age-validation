@@ -13,11 +13,13 @@ Complete reference for GitHub Actions workflows, Dependabot, and automation conf
 **Jobs:**
 - **Lint & Format:** ESLint and Prettier checks
 - **Build:** TypeScript compilation
-- **Test Matrix:** Run tests on Node.js 16.x, 18.x, 20.x
+- **Test:** Run tests on Node.js 20.x with coverage
 - **Security Audit:** Check for vulnerabilities
 - **PR Summary:** Post results as PR comment
 
-**Estimated time:** ~5-7 minutes
+**Node.js Version:** 20.x (minimum supported version)
+
+**Estimated time:** ~3-5 minutes
 
 ### 2. CI Pipeline (`.github/workflows/ci.yml`)
 
@@ -131,14 +133,18 @@ Edit `.github/dependabot.yml` to:
 
 ## Workflow Customization Examples
 
-### Change Node.js Versions
+### Node.js Version
 
-Edit the matrix in `pr-validation.yml` and `ci.yml`:
+All workflows use Node.js 20.x as the minimum supported version. To update:
+
 ```yaml
-strategy:
-  matrix:
-    node-version: [18.x, 20.x, 22.x]  # Update versions
+- name: Setup Node.js
+  uses: actions/setup-node@v4
+  with:
+    node-version: '20.x'  # Change to desired version
 ```
+
+**Note:** This project requires Node.js >=20.0.0 as specified in `package.json` engines field.
 
 ### Add Environment Variables
 

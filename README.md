@@ -16,6 +16,13 @@ Lightweight, fast, and configurable validator that can be used as a CLI (git/hoo
 - Programmatic API and standalone CLI (`validate-packages`)
 - Fast, async logging with Pino
 
+## Requirements
+
+- **Node.js**: >=20.0.0
+- **npm**: >=9.0.0
+
+This package requires Node.js 20 or higher to run. If you need support for older Node.js versions, please open an issue.
+
 ## Install
 
 Install from npm (scoped package):
