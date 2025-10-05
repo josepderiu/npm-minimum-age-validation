@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "validate-packages": "./bin/validate-packages",
-    "npm-security-check": "./bin/validate-packages"
+    "validate-packages": "./dist/cli.js",
+    "npm-security-check": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
