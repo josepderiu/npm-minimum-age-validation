@@ -192,6 +192,7 @@ git push origin main --tags
 ```
 
 The release pipeline automatically:
+
 - ✅ Runs all quality checks
 - ✅ Publishes to NPM with provenance
 - ✅ Creates GitHub Release with changelog
