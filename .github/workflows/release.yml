@@ -145,7 +145,7 @@ jobs:
           echo "Release notes extracted for version $VERSION"
 
       - name: Download package artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: npm-package
 
