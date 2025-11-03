@@ -58,14 +58,14 @@
   "homepage": "https://github.com/josepderiu/npm-minimum-age-validation/tree/main/packages/npm-minimum-age-validation#readme",
   "dependencies": {
     "chalk": "4.1.2",
-    "commander": "14.0.1",
+    "commander": "14.0.2",
     "fast-json-patch": "3.1.1",
     "node-cache": "5.1.2",
     "pino": "9.13.1"
   },
   "devDependencies": {
     "@types/jest": "30.0.0",
-    "@types/node": "20.19.23",
+    "@types/node": "20.19.24",
     "@types/pino": "7.0.4",
     "@typescript-eslint/eslint-plugin": "8.46.2",
     "@typescript-eslint/parser": "8.46.2",
